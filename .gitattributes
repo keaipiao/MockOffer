@@ -1,0 +1,21 @@
+# 统一换行符，避免 Windows CRLF 破坏脚本（mvnw / *.sh 在 Linux 上跑不了）
+* text=auto eol=lf
+
+# Windows 原生脚本保持 CRLF
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
+
+# Unix 脚本强制 LF
+mvnw    text eol=lf
+*.sh    text eol=lf
+
+# 二进制文件不做换行符转换
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.ico   binary
+*.gif   binary
+*.jar   binary
+*.woff  binary
+*.woff2 binary
