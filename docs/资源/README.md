@@ -2,7 +2,7 @@
 
 > 全项目共享的资源放这里，由 `docs/设计规范.md` 引用：
 >
-> - logo / 图标
+> - logo / 图标 → `logo/`（`png/` 生产母版、`refined/` 定稿渲染、`concept-*` 初稿；站点资产见 `frontend/public/`）
 > - 品牌色板 / 视觉素材
 > - 全局组件原型
 >
