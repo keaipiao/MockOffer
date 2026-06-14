@@ -7,6 +7,14 @@ help: ## 显示可用命令
 
 up: ## 后台启动全部服务（前端/后端/PG/Redis/MinIO）
 	$(COMPOSE) up -d
+	@echo ""
+	@echo "  服务已启动 / Services up:"
+	@echo "    前端 Frontend     http://localhost:3000"
+	@echo "    后端 Backend      http://localhost:8080   (健康 /actuator/health)"
+	@echo "    MinIO 控制台      http://localhost:9001   (minioadmin/minioadmin)"
+	@echo "    MinIO API (S3)    http://localhost:9000"
+	@echo "    PostgreSQL        localhost:5432          (mockoffer/mockoffer)"
+	@echo "    Redis             localhost:6379"
 
 down: ## 停止并移除容器与网络
 	$(COMPOSE) down

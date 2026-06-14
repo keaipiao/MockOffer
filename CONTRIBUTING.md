@@ -21,7 +21,16 @@ Windows（PowerShell）：
 ./scripts/dev.ps1 up      # down | restart | logs | ps | build | clean
 ```
 
-启动后访问 http://localhost:3000 。
+启动后会打印各服务地址（前端 3000 / 后端 8080 / MinIO 控制台 9001 等）。
+
+## 多分支并行 / Git worktrees
+
+用 `git worktree` 并行开发多个分支时，新 worktree 是独立检出，**`.lingji` 与各 `.env` 等被 gitignore 的本地文件不会带过来**。进新 worktree 后跑一次初始化脚本从主工作树拷过来：
+
+```bash
+./scripts/worktree-init.sh      # macOS / Linux
+./scripts/worktree-init.ps1     # Windows
+```
 
 ## 提交规范 / Commit messages
 
