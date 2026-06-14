@@ -1,4 +1,4 @@
-# 本地一键启停（Windows PowerShell）。用法: ./scripts/dev.ps1 [up|down|restart|logs|ps|build|clean]
+﻿# 本地一键启停（Windows PowerShell）。用法: ./scripts/dev.ps1 [up|down|restart|logs|ps|build|clean]
 param([Parameter(Position = 0)][string]$Cmd = "up")
 
 $ErrorActionPreference = "Stop"
