@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="docs/资源/logo/png/lockup-light.png" alt="模考Offer · MockOffer" width="340" />
+
 # 模考Offer · MockOffer
 
 **面向求职者的全流程 AI 闭环平台**
