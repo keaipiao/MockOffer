@@ -103,6 +103,8 @@ export default function SettingsPage() {
   }
 
   useEffect(() => {
+    // load 内的 setState 均在 await api.me() 之后异步执行，并非同步触发，规则为误报
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
