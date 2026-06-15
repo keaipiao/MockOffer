@@ -44,6 +44,22 @@ services:
     build: ../backend
     ports:
       - "8080:8080"
+    environment:
+      # 环境差异（DB/Redis 主机、cookie、前端地址）由 prod profile 决定，不在此写
+      SPRING_PROFILES_ACTIVE: prod
+      # 凭证 / 密钥
+      POSTGRES_USER: ${POSTGRES_USER:-mockoffer}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mockoffer}
+      POSTGRES_DB: ${POSTGRES_DB:-mockoffer}
+      JWT_SECRET: ${JWT_SECRET:-dev-only-change-me-please-32bytes-minimum-secret}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-dev-placeholder}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-dev-placeholder}
+      TENCENT_SES_SECRET_ID: ${TENCENT_SES_SECRET_ID:-}
+      TENCENT_SES_SECRET_KEY: ${TENCENT_SES_SECRET_KEY:-}
+      SES_FROM_EMAIL: ${SES_FROM_EMAIL:-}
+      SES_TEMPLATE_ID: ${SES_TEMPLATE_ID:-}
+      # 容器内无 deploy/.env，靠上面 environment 注入；dotenv 找不到文件时不报错
+      SPRINGDOTENV_IGNORE_IF_MISSING: "true"
     depends_on:
       postgres:
         condition: service_healthy
@@ -61,6 +77,9 @@ services:
     build: ../frontend
     ports:
       - "3000:3000"
+    environment:
+      # SSR 时 Next 服务端 → 后端走容器内网；浏览器侧请求仍用公网地址
+      BACKEND_INTERNAL_URL: http://backend:8080
     depends_on:
       backend:
         condition: service_healthy
