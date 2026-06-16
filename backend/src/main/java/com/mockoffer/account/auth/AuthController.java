@@ -26,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
+    /** 旧 refresh 轮换后的宽限期（秒）：容忍前端并发刷新，过后失效。 */
+    private static final long REFRESH_GRACE_SECONDS = 30;
+
     private final OtpService otp;
     private final AccountService account;
     private final JwtService jwt;
@@ -85,7 +88,7 @@ public class AuthController {
         if (refresh == null) {
             throw new BizException(40101, "未登录或会话已过期");
         }
-        Long userId = store.consumeRefresh(refresh);
+        Long userId = store.rotateRefresh(refresh, REFRESH_GRACE_SECONDS);
         if (userId == null) {
             throw new BizException(40101, "会话已过期，请重新登录");
         }

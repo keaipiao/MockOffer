@@ -94,7 +94,7 @@ public class AccountService {
         return identities.findByUserIdAndDeletedAtIsNull(userId);
     }
 
-    /** 解绑：仅剩一种时拒绝；软删后二次校验兜底并发。 */
+    /** 解绑：仅剩一种登录方式时拒绝。注：并发解绑两种方式的极端竞态未加锁（M1 单点可接受），严格场景需对账号加行锁。 */
     @Transactional
     public void unbind(long userId, String provider) {
         var opt = identities.findByUserIdAndProviderAndDeletedAtIsNull(userId, provider);
@@ -106,10 +106,7 @@ public class AccountService {
         }
         UserIdentity identity = opt.get();
         identity.setDeletedAt(OffsetDateTime.now());
-        identities.saveAndFlush(identity);
-        if (identities.countByUserIdAndDeletedAtIsNull(userId) < 1) {
-            throw new BizException(40902, "至少保留一种登录方式");
-        }
+        identities.save(identity);
     }
 
     /** 换绑 / 绑定邮箱：新邮箱被他人占用则拒；有 email_otp 身份则改其 uid，否则新增。 */

@@ -154,7 +154,7 @@ class AccountServiceTest {
         BizException e = catchThrowableOfType(BizException.class,
                 () -> account.unbind(5L, Provider.GITHUB));
         assertThat(e.getCode()).isEqualTo(40902);
-        verify(identities, never()).saveAndFlush(any());
+        verify(identities, never()).save(any());
     }
 
     @Test
@@ -162,12 +162,12 @@ class AccountServiceTest {
         UserIdentity target = identity(5L, Provider.GITHUB, "gh1");
         when(identities.findByUserIdAndProviderAndDeletedAtIsNull(5L, Provider.GITHUB))
                 .thenReturn(Optional.of(target));
-        when(identities.countByUserIdAndDeletedAtIsNull(5L)).thenReturn(2L, 1L);
+        when(identities.countByUserIdAndDeletedAtIsNull(5L)).thenReturn(2L);
 
         account.unbind(5L, Provider.GITHUB);
 
         assertThat(target.getDeletedAt()).isNotNull();
-        verify(identities).saveAndFlush(target);
+        verify(identities).save(target);
     }
 
     // ---------- changeEmail ----------

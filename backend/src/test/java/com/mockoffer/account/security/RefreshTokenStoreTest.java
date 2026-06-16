@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
-/** RefreshTokenStore 单测：refresh 一次性消费（轮换/重放拒绝）、access 黑名单（即时吊销）。 */
+/** RefreshTokenStore 单测：refresh 轮换（取出用户 + 旧 token 降宽限期）、access 黑名单（即时吊销）。 */
 @ExtendWith(MockitoExtension.class)
 class RefreshTokenStoreTest {
 
@@ -40,18 +40,18 @@ class RefreshTokenStoreTest {
     }
 
     @Test
-    void 消费refresh第一次拿到用户重放返回null() {
-        when(valueOps.getAndDelete("rt:tok")).thenReturn("7", null);
+    void 轮换refresh取出用户并把旧token降到宽限期() {
+        when(valueOps.get("rt:tok")).thenReturn("7");
 
-        assertThat(store.consumeRefresh("tok")).isEqualTo(7L);
-        assertThat(store.consumeRefresh("tok")).isNull();
+        assertThat(store.rotateRefresh("tok", 30)).isEqualTo(7L);
+        verify(redis).expire(eq("rt:tok"), any(Duration.class));
     }
 
     @Test
-    void 消费不存在的refresh返回null() {
-        when(valueOps.getAndDelete("rt:x")).thenReturn(null);
+    void 轮换不存在的refresh返回null() {
+        when(valueOps.get("rt:x")).thenReturn(null);
 
-        assertThat(store.consumeRefresh("x")).isNull();
+        assertThat(store.rotateRefresh("x", 30)).isNull();
     }
 
     @Test

@@ -21,10 +21,17 @@ public class RefreshTokenStore {
         redis.opsForValue().set(RT + token, Long.toString(userId), Duration.ofSeconds(ttlSeconds));
     }
 
-    /** 原子取出并删除（GETDEL）：保证一个 refresh 只能被消费一次，配合轮换。 */
-    public Long consumeRefresh(String token) {
-        String v = redis.opsForValue().getAndDelete(RT + token);
-        return v == null ? null : Long.valueOf(v);
+    /**
+     * 轮换消费：取出 userId，并把旧 token 降到短宽限期（不立即删）。
+     * 宽限期内并发的重复 refresh 仍能拿到 userId、正常刷新，避免前端并发刷新把彼此挤掉登录；过期即失效。
+     */
+    public Long rotateRefresh(String token, long graceSeconds) {
+        String v = redis.opsForValue().get(RT + token);
+        if (v == null) {
+            return null;
+        }
+        redis.expire(RT + token, Duration.ofSeconds(graceSeconds));
+        return Long.valueOf(v);
     }
 
     public void deleteRefresh(String token) {
