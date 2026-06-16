@@ -50,7 +50,7 @@ Stop with `make down` or `./scripts/dev.ps1 down`.
 
 ## 🗺 Roadmap
 
-M0 Foundation (architecture / design system / scaffold) ✅ → M1 Auth → M2 Résumé builder → M3 Job input → M4 Résumé–job matching → M5 AI mock interview → M6 Interview report → M7 Monetization
+M0 Foundation (architecture / design system / scaffold) ✅ → M1 Auth ✅ → M2 Résumé builder → M3 Job input → M4 Résumé–job matching → M5 AI mock interview → M6 Interview report → M7 Monetization
 
 ## 🤝 Contributing
 
