@@ -8,6 +8,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -32,8 +33,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    /** dev 默认密钥：仅本地用；prod 必须用 JWT_SECRET 覆盖，否则启动即失败。 */
+    private static final String DEV_DEFAULT_SECRET = "dev-only-change-me-please-32bytes-minimum-secret";
+
     @Bean
-    SecretKey jwtSecretKey(@Value("${app.jwt.secret}") String secret) {
+    SecretKey jwtSecretKey(@Value("${app.jwt.secret}") String secret, Environment env) {
+        if (env.matchesProfiles("prod") && DEV_DEFAULT_SECRET.equals(secret)) {
+            throw new IllegalStateException("prod 环境必须配置 JWT_SECRET，禁止使用默认开发密钥");
+        }
         return new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
     }
 
